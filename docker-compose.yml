@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: meupet_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: meupet
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - meupet-network
+
+  kong:
+    build: ./kong
+    container_name: meupet_kong_gateway
+    restart: always
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: "/etc/kong/kong.yaml"
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    networks:
+      - meupet-network
+
+# Define que a rede é externa e já foi criada
+networks:
+  meupet-network:
+    external: true
+
+# Define os volumes para persistir os dados do banco
+volumes:
+  mysql_data:

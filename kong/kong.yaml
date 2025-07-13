@@ -1,0 +1,18 @@
+_format_version: "3.0"
+services:
+  - name: user-service
+    host: users-api
+    port: 8082
+    routes:
+      - name: users-routes
+        paths:
+          - ~/usuarios
+        strip_path: false
+  - name: animal-service
+    host: animals-api
+    port: 8083
+    routes:
+      - name: animals-routes
+        paths:
+          - ~/animais
+        strip_path: false
