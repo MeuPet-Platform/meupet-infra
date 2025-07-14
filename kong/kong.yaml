@@ -1,4 +1,5 @@
 _format_version: "3.0"
+
 services:
   - name: user-service
     host: users-api
@@ -8,6 +9,14 @@ services:
         paths:
           - ~/usuarios
         strip_path: false
+    plugins:
+      - name: cors
+        config:
+          origins: ["*"]
+          methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+          headers: ["Accept", "Authorization", "Content-Type"]
+          credentials: true
+
   - name: animal-service
     host: animals-api
     port: 8083
@@ -16,3 +25,10 @@ services:
         paths:
           - ~/animais
         strip_path: false
+    plugins:
+      - name: cors
+        config:
+          origins: ["*"]
+          methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+          headers: ["Accept", "Authorization", "Content-Type"]
+          credentials: true
