@@ -1,38 +1,38 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: meupet_mysql
+  postgres:
+    image: postgres:15
+    container_name: meupet_postgres
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: meupet
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: meupet_db
     ports:
-      - "3306:3306"
+      - "5433:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - meupet-network
 
-  kong:
-    build: ./kong
-    container_name: meupet_kong_gateway
+  nginx: # Novo nome do serviço
+    build: ./nginx # Aponte para a pasta onde você criou o Dockerfile e nginx.conf
+    container_name: meupet_nginx_gateway
     restart: always
-    environment:
-      KONG_DATABASE: "off"
-      KONG_DECLARATIVE_CONFIG: "/etc/kong/kong.yaml"
     ports:
-      - "8000:8000"
-      - "8001:8001"
+      - "8000:8000" # Mapeia a porta 8000 do host para a porta 8000 do container
     networks:
       - meupet-network
+    # healthcheck: (Opcional, você pode adicionar um healthcheck simples para o NGINX)
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000/nginx_status"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
 
-# Define que a rede é externa e já foi criada
 networks:
   meupet-network:
     external: true
 
-# Define os volumes para persistir os dados do banco
 volumes:
-  mysql_data:
+  postgres_data:
