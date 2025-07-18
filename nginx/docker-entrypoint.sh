@@ -1,5 +1,9 @@
-#!/bin/sh
-# Substituir variáveis de ambiente no nginx.conf antes de iniciar
-envsubst '$${PORT},$${USERS_API_URL},$${ANIMALS_API_URL}' < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp \
-&& mv /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf \
-&& exec nginx -g "daemon off;"
+FROM nginx:1.25-alpine
+
+# Copia o nginx.conf já com as URLs fixas
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Exponha a porta usada no nginx.conf
+EXPOSE 80
+
+# Usa o entrypoint padrão do NGINX
