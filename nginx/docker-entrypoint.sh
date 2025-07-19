@@ -1,9 +1,17 @@
-FROM nginx:1.25-alpine
+#!/bin/sh
 
-# Copia o nginx.conf já com as URLs fixas
-COPY nginx.conf /etc/nginx/nginx.conf
+export PORT
+export USERS_API_URL
+export ANIMALS_API_URL
 
-# Exponha a porta usada no nginx.conf
-EXPOSE 80
+# Substitui variáveis no nginx.conf
+envsubst '${PORT} ${USERS_API_URL} ${ANIMALS_API_URL}' < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
+mv /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
 
-# Usa o entrypoint padrão do NGINX
+# ✅ Exibe o conteúdo final no log do Heroku
+echo "===== nginx.conf FINAL gerado ====="
+cat /etc/nginx/nginx.conf
+echo "==================================="
+
+# Executa o NGINX em foreground
+exec nginx -g "daemon off;"
